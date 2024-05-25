@@ -31,3 +31,7 @@ Collection:
 - Dans la page de modification, appuyer sur le nom du héro pour en choisir un autre
 
 Dans la vue 'collection', la mise à jour des héros 'build' ne fonctionne pas
+
+## link
+
+https://github.com/Toriku097/feh_helper
