@@ -1,14 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:feh_toolkit/model/hero_build.dart';
 import 'package:feh_toolkit/controller/hero_build_controller.dart';
 import 'package:feh_toolkit/model/hero.dart';
 import 'package:feh_toolkit/controller/hero_controller.dart';
-import 'package:flutter/rendering.dart';
 
 class HeroBuilder extends StatefulWidget {
   HeroBuild currentBuild;
-  FeHero currentHero;
-  HeroBuilder({super.key, required this.currentBuild, required this.currentHero});
+  HeroBuilder({super.key, required this.currentBuild});
 
   @override
   State<HeroBuilder> createState() => _HeroBuilderState();
@@ -19,8 +19,13 @@ class _HeroBuilderState extends State<HeroBuilder> {
   static final heroTable = FeHeroController();
 
   late List<FeHero> heroList;
+  late FeHero currentHero;
+
+
   bool modifying = false;
   var isModified = true;
+  var isLoading = true;  
+
 
   @override
   void initState() {
@@ -34,22 +39,43 @@ class _HeroBuilderState extends State<HeroBuilder> {
 
     setState(() {
       heroList = hList;
+      currentHero = selectHero(widget.currentBuild.hero);
 
+      // For later
       if (widget.currentBuild.id != null){
         modifying = true;
       }
+
+      isLoading = false;
     });
   }
 
   // Update hero
   void changeHero(FeHero feHero) {
     setState(() {
-      widget.currentHero = feHero;
+      currentHero = feHero;
+      widget.currentBuild = HeroBuild.fromHero(feHero);
     });
+  }
+
+  // Find the hero from build
+  FeHero selectHero(String heroName) {
+    if (heroName != 'null') {
+      return heroList.where((feHero) => feHero.name == heroName).first;
+    } else {
+      int randomHeroId = Random().nextInt(heroList.length) + 19;
+      return heroList[randomHeroId];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hero Details'),
@@ -78,7 +104,7 @@ class _HeroBuilderState extends State<HeroBuilder> {
                 padding: const EdgeInsets.only(
                     top: 5, bottom: 5, left: 25, right: 25),
                 child: Text(
-                  widget.currentHero.name,
+                  widget.currentBuild.hero,
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -96,7 +122,7 @@ class _HeroBuilderState extends State<HeroBuilder> {
               margin: const EdgeInsets.only(left: 10, bottom: 370),
               padding:
                   const EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 25),
-              child: Text(widget.currentHero.title),
+              child: Text(currentHero.title),
             ),
           ),
 
@@ -104,7 +130,7 @@ class _HeroBuilderState extends State<HeroBuilder> {
           Align(
             alignment: Alignment.bottomCenter,
             child: DetailsContainer(
-                currentHero: widget.currentHero, currentBuild: widget.currentBuild),
+                currentHero: currentHero, currentBuild: widget.currentBuild),
           ),
 
           // done, cancel & save button

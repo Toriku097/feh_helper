@@ -65,7 +65,7 @@ class __HeroListState extends State<_HeroList> {
     });
   }
 
-  // return named hero;
+  // return hero from build
   FeHero selectHero(String heroName) {
     if (heroName != 'null') {
       return heroList.where((feHero) => feHero.name == heroName).first;
@@ -128,9 +128,8 @@ class __HeroListState extends State<_HeroList> {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => HeroBuilder(
-                              currentBuild: collection![index],
-                              currentHero: selectHero(collection![index].hero))),
+                          builder: (context) =>
+                              HeroBuilder(currentBuild: collection![index])),
                     );
                     _refreshCollection();
                   },
@@ -165,8 +164,7 @@ class __HeroListState extends State<_HeroList> {
                         MaterialPageRoute(
                             builder: (context) => HeroBuilder(
                                 currentBuild:
-                                    HeroBuild.fromHero(selectHero('null')),
-                                currentHero: selectHero('null'))),
+                                    HeroBuild.fromHero(selectHero('null')))),
                       );
                       _refreshCollection();
                     },

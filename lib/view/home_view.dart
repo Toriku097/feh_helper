@@ -5,16 +5,6 @@ import 'package:feh_toolkit/view/encyclopedia/assists_view.dart';
 import 'package:feh_toolkit/view/encyclopedia/specials_view.dart';
 import 'package:feh_toolkit/view/encyclopedia/passives_view.dart';
 
-import 'package:feh_toolkit/model/hero.dart';
-import 'package:feh_toolkit/model/weapon.dart';
-import 'package:feh_toolkit/controller/weapon_controller.dart';
-import 'package:feh_toolkit/model/assist.dart';
-import 'package:feh_toolkit/controller/assist_controller.dart';
-import 'package:feh_toolkit/model/special.dart';
-import 'package:feh_toolkit/controller/special_controller.dart';
-import 'package:feh_toolkit/model/skill.dart';
-import 'package:feh_toolkit/controller/skill_controller.dart';
-
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
