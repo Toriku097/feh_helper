@@ -21,11 +21,9 @@ class _HeroBuilderState extends State<HeroBuilder> {
   late List<FeHero> heroList;
   late FeHero currentHero;
 
-
-  bool modifying = false;
+  var updatingBuild = false;
   var isModified = true;
-  var isLoading = true;  
-
+  var isLoading = true;
 
   @override
   void initState() {
@@ -42,10 +40,10 @@ class _HeroBuilderState extends State<HeroBuilder> {
       currentHero = selectHero(widget.currentBuild.hero);
 
       // For later
-      if (widget.currentBuild.id != null){
-        modifying = true;
+      if (widget.currentBuild.id != null) {
+        isModified = false;
+        updatingBuild = true;
       }
-
       isLoading = false;
     });
   }
@@ -53,8 +51,9 @@ class _HeroBuilderState extends State<HeroBuilder> {
   // Update hero
   void changeHero(FeHero feHero) {
     setState(() {
+      var buildId = widget.currentBuild.id;
       currentHero = feHero;
-      widget.currentBuild = HeroBuild.fromHero(feHero);
+      widget.currentBuild = HeroBuild.updateBuild(feHero, buildId);
     });
   }
 
@@ -83,7 +82,7 @@ class _HeroBuilderState extends State<HeroBuilder> {
       ),
       body: Stack(
         children: [
-          // image + back ground
+          // image + background
           // IN PROGRESS...
 
           // rarity star
@@ -93,8 +92,7 @@ class _HeroBuilderState extends State<HeroBuilder> {
           Align(
             alignment: Alignment.bottomLeft,
             child: GestureDetector(
-              onTap: () =>
-                searchHero(context),
+              onTap: () => searchHero(context),
               child: Container(
                 decoration: const BoxDecoration(
                   color: Color.fromARGB(255, 39, 39, 39),
@@ -142,20 +140,22 @@ class _HeroBuilderState extends State<HeroBuilder> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (!isModified)
-                    const ElevatedButton(onPressed: null, child: Text('Done'))
+                    ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Done'))
                   else ...[
                     ElevatedButton(
-                        onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel')),
                     const SizedBox(
                       width: 10,
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          if (modifying == false) {
+                          if (updatingBuild == false) {
                             heroBuildTable.insertHeroBuild(widget.currentBuild);
                             Navigator.pop(context);
                           } else {
-                            // UPDATE DOESN'T WORK
                             heroBuildTable.updateHeroBuild(widget.currentBuild);
                             Navigator.pop(context);
                           }
@@ -182,7 +182,6 @@ class _HeroBuilderState extends State<HeroBuilder> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             // Title & Search bar
             Container(
               decoration: const BoxDecoration(
@@ -195,7 +194,10 @@ class _HeroBuilderState extends State<HeroBuilder> {
               width: double.infinity,
               child: const Column(
                 children: [
-                  Text('Select Hero', style: TextStyle(fontSize: 20),),
+                  Text(
+                    'Select Hero',
+                    style: TextStyle(fontSize: 20),
+                  ),
                   Text('Search Bar'), // place holder, change to a search bar
                 ],
               ),
@@ -212,10 +214,12 @@ class _HeroBuilderState extends State<HeroBuilder> {
                     return TextButton(
                       onPressed: () {
                         changeHero(heroList[index]);
+                        isModified = true;
                         Navigator.pop(context);
                       },
                       child: Text(
-                      heroList[index].name,),
+                        heroList[index].name,
+                      ),
                     );
                   }),
             ),
@@ -234,7 +238,9 @@ class _HeroBuilderState extends State<HeroBuilder> {
                 child: Row(
                   children: [
                     const Spacer(),
-                    ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel'))
+                    ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'))
                   ],
                 ),
               ),

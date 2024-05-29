@@ -74,14 +74,24 @@ class DatabaseHelper {
 
   // Update built hero in database
   Future<void> updateHeroBuild(HeroBuild heroBuild) async {
-    final db = await instance.database;
-    await db.update(
-      'HeroBuild',
-      heroBuild.toMap(),
-      where: 'id = ?',
-      whereArgs: [heroBuild.id],
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      final db = await instance.database;
+      final int result = await db.update(
+        'HeroBuild',
+        heroBuild.toMap(),
+        where: 'id = ?',
+        whereArgs: [heroBuild.id],
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (result == 0) {
+        print('No HeroBuild found with id ${heroBuild.id} to update.');
+      } else {
+        print('HeroBuild with id ${heroBuild.id} updated successfully.');
+      }
+    } catch (e) {
+      print('Error updating HeroBuild: $e');
+      // Handle the error accordingly, maybe rethrow it or log it
+    }
   }
 
   // Get all built heroes from database
@@ -94,7 +104,7 @@ class DatabaseHelper {
 
   // Get filtered built heroes from database
   // IN PROGRESS...
-  
+
   // Delete built hero in database
   Future<void> deleteHeroBuild(int id) async {
     final db = await instance.database;
@@ -118,7 +128,6 @@ class DatabaseHelper {
   // Get filtered
   // IN PROGRESS...
 
-
   // TABLE: Weapon
 
   // Get all weapons
@@ -131,7 +140,6 @@ class DatabaseHelper {
 
   // Get filtered
   // IN PROGRESS...
-
 
   // TABLE: Assist
 
@@ -146,7 +154,6 @@ class DatabaseHelper {
   // Get filtered
   // IN PROGRESS...
 
-
   // TABLE: Special
 
   // Get all specials
@@ -159,7 +166,6 @@ class DatabaseHelper {
 
   // Get filtered
   // IN PROGRESS...
-  
 
   // TABLE: Skill
 
@@ -173,14 +179,12 @@ class DatabaseHelper {
 
   // Get filtered
   // IN PROGRESS...
-  
-  
+
   // TABLE: AllyCondition
-  
+
   // IN PROGRESS...
-  
+
   // TABLE: ActiveEffect
 
   // IN PROGRESS...
-
 }

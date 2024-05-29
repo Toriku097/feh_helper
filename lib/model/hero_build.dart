@@ -1,4 +1,5 @@
 import 'package:feh_toolkit/model/hero.dart';
+import 'package:flutter/material.dart';
 
 class HeroBuild {
   int? id;
@@ -44,18 +45,23 @@ class HeroBuild {
   });
 
   HeroBuild.fromHero(FeHero feHero)
-    : hero = feHero.name,
-      weapon = feHero.weapon,
-      refState = 0,
-      assist = feHero.assist,
-      special = feHero.special,
-      skillA = feHero.skillA,
-      skillB = feHero.skillB,
-      skillC = feHero.skillC;
+      : hero = feHero.name,
+        weapon = feHero.weapon,
+        refState = 0,
+        assist = feHero.assist,
+        special = feHero.special,
+        skillA = feHero.skillA,
+        skillB = feHero.skillB,
+        skillC = feHero.skillC;
+
+  static HeroBuild updateBuild(FeHero feHero, int? id){
+    HeroBuild build = HeroBuild.fromHero(feHero);
+    build.id = id;
+    return build;
+  }
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+    final map = {
       'hero': hero,
       'boon': boon,
       'bane': bane,
@@ -75,8 +81,12 @@ class HeroBuild {
       'seal': seal,
       'seal_alt': sealAlt,
     };
+    if (id != null) {
+      map['id'] = id;
+    }
+    return map;
   }
-  
+
   factory HeroBuild.fromMap(Map<String, dynamic> map) {
     return HeroBuild(
       id: map['id'] as int?,
